@@ -9,6 +9,17 @@ function parse() {
 
 const grid = parse();
 
+function getNeighbors(cordY: number, cordX: number) {
+  const horizontalNeighborhood = grid[cordY];
+  const verticalNeighborhood = grid.map((lines) => lines[cordX]);
+
+  const left = horizontalNeighborhood.slice(0, cordX).reverse();
+  const right = horizontalNeighborhood.slice(cordX + 1);
+  const up = verticalNeighborhood.slice(0, cordY).reverse();
+  const down = verticalNeighborhood.slice(cordY + 1);
+  return { left, right, up, down };
+}
+
 function isVisible(cordX: number, cordY: number) {
   const lenY = grid.length;
   const lenX = first(grid).length;
@@ -19,31 +30,17 @@ function isVisible(cordX: number, cordY: number) {
     return true;
   }
 
-  const horizontalNeighborhood = grid[cordY];
+  const visibleDirection = (direction: number[]) =>
+    direction.every((tree) => tree < currentTree);
 
-  const left = horizontalNeighborhood.slice(0, cordX);
-  if (left.every((tree) => tree < currentTree)) {
-    return true;
-  }
+  const { left, right, up, down } = getNeighbors(cordY, cordX);
 
-  const right = horizontalNeighborhood.slice(cordX + 1);
-  if (right.every((tree) => tree < currentTree)) {
-    return true;
-  }
-
-  const verticalNeighborhood = grid.map((lines) => lines[cordX]);
-
-  const up = verticalNeighborhood.slice(0, cordY);
-  if (up.every((tree) => tree < currentTree)) {
-    return true;
-  }
-
-  const down = verticalNeighborhood.slice(cordY + 1);
-  if (down.every((tree) => tree < currentTree)) {
-    return true;
-  }
-
-  return false;
+  return (
+    visibleDirection(left) ||
+    visibleDirection(right) ||
+    visibleDirection(up) ||
+    visibleDirection(down)
+  );
 }
 
 function scenicScore(cordX: number, cordY: number) {
@@ -62,13 +59,7 @@ function scenicScore(cordX: number, cordY: number) {
     return index >= 0 ? index + 1 : neighbors.length;
   };
 
-  const horizontalNeighborhood = grid[cordY];
-  const verticalNeighborhood = grid.map((lines) => lines[cordX]);
-
-  const left = horizontalNeighborhood.slice(0, cordX).reverse();
-  const right = horizontalNeighborhood.slice(cordX + 1);
-  const up = verticalNeighborhood.slice(0, cordY).reverse();
-  const down = verticalNeighborhood.slice(cordY + 1);
+  const { left, right, up, down } = getNeighbors(cordY, cordX);
 
   return (
     findDirectionScore(left) *
