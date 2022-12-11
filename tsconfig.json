@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",
+      "esModuleInterop": true,
+      "target": "es6",
+      "moduleResolution": "node",
+      "sourceMap": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true,
+      "outDir": "dist",
+      "types": [
+        "node"
+      ],
+      "baseUrl": ".",
+      "paths": {
+        "src/*": ["./src/*"]
+      }
+    }
+  }
+  

@@ -1,0 +1,23 @@
+{
+  "name": "advent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "ioredis": "^4.0.5",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.7",
+    "socket.io-client": "^4.5.0",
+    "ts-node": "^9.1.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.11.10"
+  }
+}
