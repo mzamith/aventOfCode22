@@ -1,5 +1,5 @@
-import { first } from "lodash";
-import { parseFile } from "../util";
+import { first } from 'lodash';
+import { parseFile } from '../util';
 
 function groupRucksacks(input: string[], num: number): string[][] {
   return input.reduce(function (result, value, index, array) {
@@ -29,10 +29,7 @@ function findCommonLetter(...sections: string[]) {
 function getRucksackScore(rucksack: string) {
   const totalItems = rucksack.length;
   const itemsEach = Math.round(rucksack.length / 2);
-  const [sectionOne, sectionTwo] = [
-    rucksack.slice(0, itemsEach),
-    rucksack.slice(itemsEach, totalItems),
-  ];
+  const [sectionOne, sectionTwo] = [rucksack.slice(0, itemsEach), rucksack.slice(itemsEach, totalItems)];
 
   const commonLetter = findCommonLetter(sectionOne, sectionTwo);
   return letterScore(commonLetter);
@@ -44,17 +41,11 @@ function getMultipleRucksackScore(...rucksacks: string[]) {
 }
 
 const input = parseFile();
-const totalPart1 = input.reduce(
-  (prev, rucksack) => prev + getRucksackScore(rucksack),
-  0
-);
+const totalPart1 = input.reduce((prev, rucksack) => prev + getRucksackScore(rucksack), 0);
 
 const grouped = groupRucksacks(input, 3);
 
-const totalPart2 = grouped.reduce(
-  (prev, rucksack) => prev + getMultipleRucksackScore(...rucksack),
-  0
-);
+const totalPart2 = grouped.reduce((prev, rucksack) => prev + getMultipleRucksackScore(...rucksack), 0);
 
 console.log(`Part 1: ${totalPart1}`);
 console.log(`Part 2: ${totalPart2}`);

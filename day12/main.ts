@@ -1,10 +1,10 @@
-import { min, minBy } from "lodash";
-import { parseFile } from "../util";
+import { min, minBy } from 'lodash';
+import { parseFile } from '../util';
 
-const START = "S";
-const END = "E";
-const LOWEST = "a";
-const HIGHEST = "z";
+const START = 'S';
+const END = 'E';
+const LOWEST = 'a';
+const HIGHEST = 'z';
 
 interface Vertex {
   distance: number;
@@ -34,19 +34,10 @@ class Grid {
       for (let x = 0; x < length; x++) {
         const value = grid[y][x];
         const id = this.id(x, y);
-        if (
-          (!startCoordinates && value === START) ||
-          (startCoordinates?.x === x && startCoordinates?.y === y)
-        ) {
+        if ((!startCoordinates && value === START) || (startCoordinates?.x === x && startCoordinates?.y === y)) {
           this.unvisitedCells.set(id, { distance: 0, id, value, x, y });
         } else {
-          this.unvisitedCells.set(id, {
-            distance: Number.POSITIVE_INFINITY,
-            id,
-            value,
-            x,
-            y,
-          });
+          this.unvisitedCells.set(id, { distance: Number.POSITIVE_INFINITY, id, value, x, y });
         }
       }
     }
@@ -65,32 +56,18 @@ class Grid {
   }
 
   isNeighbor(currentValue: string, nextValue: string) {
-    const value =
-      currentValue === START
-        ? LOWEST
-        : currentValue === END
-        ? HIGHEST
-        : currentValue;
-    const followingValue =
-      nextValue === START ? LOWEST : nextValue === END ? HIGHEST : nextValue;
+    const value = currentValue === START ? LOWEST : currentValue === END ? HIGHEST : currentValue;
+    const followingValue = nextValue === START ? LOWEST : nextValue === END ? HIGHEST : nextValue;
     return value.charCodeAt(0) + 1 >= followingValue.charCodeAt(0);
   }
 
   getNeighbors(vertex: Vertex) {
     const { x, y, value } = vertex;
     const neighbors: Vertex[] = [];
-    const candidates = [
-      this.getCell(x, y - 1),
-      this.getCell(x, y + 1),
-      this.getCell(x - 1, y),
-      this.getCell(x + 1, y),
-    ];
+    const candidates = [this.getCell(x, y - 1), this.getCell(x, y + 1), this.getCell(x - 1, y), this.getCell(x + 1, y)];
 
     candidates.forEach((candidate) => {
-      if (
-        this.unvisitedCells.has(candidate?.id) &&
-        this.isNeighbor(value, candidate.value)
-      ) {
+      if (this.unvisitedCells.has(candidate?.id) && this.isNeighbor(value, candidate.value)) {
         neighbors.push(candidate);
       }
     });
@@ -134,7 +111,7 @@ const startingIndexes = new Set<string>();
 const shortestPaths: number[] = [];
 
 grid.forEach((line, index) =>
-  line.split("").forEach((char, indexX) => {
+  line.split('').forEach((char, indexX) => {
     if (char === LOWEST) startingIndexes.add(`${indexX}:${index}`);
   })
 );
@@ -142,10 +119,10 @@ grid.forEach((line, index) =>
 // Try to optimize a little bit as to not repeat straight paths
 while (startingIndexes.size !== 0) {
   const [index] = startingIndexes;
-  const coords = index.split(":").map((i) => parseInt(i, 10));
+  const coords = index.split(':').map((i) => parseInt(i, 10));
   const result = new Grid(grid, {
     x: coords[0],
-    y: coords[1],
+    y: coords[1]
   }).findShortestPath();
 
   if (result.lastVertex) {
@@ -167,4 +144,4 @@ while (startingIndexes.size !== 0) {
   }
 }
 
-console.log(`Part 1: ${min(shortestPaths)}`);
+console.log(`Part 2: ${min(shortestPaths)}`);

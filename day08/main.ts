@@ -1,10 +1,8 @@
-import { first } from "lodash";
-import { parseFile } from "../util";
+import { first } from 'lodash';
+import { parseFile } from '../util';
 
 function parse() {
-  return parseFile().map((line) =>
-    line.split("").map((str) => parseInt(str, 10))
-  );
+  return parseFile().map((line) => line.split('').map((str) => parseInt(str, 10)));
 }
 
 const grid = parse();
@@ -30,17 +28,11 @@ function isVisible(cordX: number, cordY: number) {
     return true;
   }
 
-  const visibleDirection = (direction: number[]) =>
-    direction.every((tree) => tree < currentTree);
+  const visibleDirection = (direction: number[]) => direction.every((tree) => tree < currentTree);
 
   const { left, right, up, down } = getNeighbors(cordY, cordX);
 
-  return (
-    visibleDirection(left) ||
-    visibleDirection(right) ||
-    visibleDirection(up) ||
-    visibleDirection(down)
-  );
+  return visibleDirection(left) || visibleDirection(right) || visibleDirection(up) || visibleDirection(down);
 }
 
 function scenicScore(cordX: number, cordY: number) {
@@ -61,12 +53,7 @@ function scenicScore(cordX: number, cordY: number) {
 
   const { left, right, up, down } = getNeighbors(cordY, cordX);
 
-  return (
-    findDirectionScore(left) *
-    findDirectionScore(right) *
-    findDirectionScore(up) *
-    findDirectionScore(down)
-  );
+  return findDirectionScore(left) * findDirectionScore(right) * findDirectionScore(up) * findDirectionScore(down);
 }
 
 let totalPart1 = 0;

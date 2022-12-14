@@ -1,26 +1,26 @@
-import { first, last, sum } from "lodash";
-import { parseFile } from "../util";
+import { first, last, sum } from 'lodash';
+import { parseFile } from '../util';
 
 export interface Node {
-  type: "dir" | "file";
+  type: 'dir' | 'file';
   name: string;
 }
 
 export class FileNode implements Node {
-  type: "file";
+  type: 'file';
 
   constructor(public name: string, public size: number) {
-    this.type = "file";
+    this.type = 'file';
   }
 }
 
 export class DirNode implements Node {
-  type: "dir";
+  type: 'dir';
   children: Node[];
 
   constructor(public name: string) {
     this.children = [];
-    this.type = "dir";
+    this.type = 'dir';
   }
 }
 
@@ -34,8 +34,8 @@ export function parseTree() {
     const currentParentDirectory = last(directoryStack);
     const [, command, arg] = inputCommandRegExp.exec(terminalLine) ?? [];
 
-    if (command === "cd") {
-      if (arg === "..") {
+    if (command === 'cd') {
+      if (arg === '..') {
         directoryStack.pop();
       } else {
         const newDirNode = new DirNode(arg);
@@ -61,12 +61,9 @@ export function parseTree() {
 function sizes(root: Node) {
   const sizes: number[] = []; // an array of directory sizes. doesn't matter which dir has which size
   const findSize = (node: Node) => {
-    if (node.type === "dir") {
+    if (node.type === 'dir') {
       const dirNode = node as DirNode;
-      const dirSize = dirNode.children.reduce(
-        (prev, child) => prev + findSize(child),
-        0
-      );
+      const dirSize = dirNode.children.reduce((prev, child) => prev + findSize(child), 0);
 
       sizes.push(dirSize);
       return dirSize;
@@ -83,9 +80,7 @@ const sizesArr = sizes(tree);
 
 const smallSizes = sum(sizesArr.filter((size) => size < 100000)); // Question 1
 const sortedSizes = sizesArr.sort((a, b) => b - a);
-const outermostDir = sortedSizes.find(
-  (size) => size > 30000000 - (70000000 - last(sortedSizes))
-); // question 2
+const outermostDir = sortedSizes.find((size) => size > 30000000 - (70000000 - last(sortedSizes))); // question 2
 
 console.log(`Part 1: ${smallSizes}`);
 console.log(`Part 2: ${outermostDir}`);

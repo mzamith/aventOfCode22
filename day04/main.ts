@@ -1,4 +1,4 @@
-import { parseFile } from "../util";
+import { parseFile } from '../util';
 
 type Ranges = [
   number, // lower limit first range
@@ -8,9 +8,7 @@ type Ranges = [
 ];
 
 function parseInput() {
-  return parseFile().map((stringPair) =>
-    stringPair.split(/[-,]+/).map((str) => parseInt(str, 10))
-  ) as Ranges[]; // split by , or - to get all ranges
+  return parseFile().map((stringPair) => stringPair.split(/[-,]+/).map((str) => parseInt(str, 10))) as Ranges[]; // split by , or - to get all ranges
 }
 
 function contains(pair: Ranges) {
@@ -27,5 +25,6 @@ function overlaps(pair: Ranges) {
 const ranges = parseInput();
 const totalPart1 = ranges.filter((range) => contains(range)).length;
 const totalPart2 = ranges.filter((range) => overlaps(range)).length;
+
 console.log(`Part 1: ${totalPart1}`);
 console.log(`Part 2: ${totalPart2}`);

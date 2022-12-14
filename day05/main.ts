@@ -1,5 +1,5 @@
-import { last } from "lodash";
-import fs from "fs";
+import { last } from 'lodash';
+import fs from 'fs';
 
 export type Move = [number, number, number];
 
@@ -22,19 +22,15 @@ function fillPositionGrid(diagram: string[], indexArray: string) {
 }
 
 function parseMoves(moves: string[]) {
-  return moves.map((move) =>
-    move.match(/\d+/g).map((result) => parseInt(result, 10))
-  ) as Move[];
+  return moves.map((move) => move.match(/\d+/g).map((result) => parseInt(result, 10))) as Move[];
 }
 
 export function parseFile(): [Map<number, string[]>, Move[]] {
-  const [positionsDiagram, movesText] = fs
-    .readFileSync("./input.txt", "utf-8")
-    .split("\n\n");
+  const [positionsDiagram, movesText] = fs.readFileSync('./input.txt', 'utf-8').split('\n\n');
 
-  const positionsDiagramFull = positionsDiagram.split("\n");
+  const positionsDiagramFull = positionsDiagram.split('\n');
   const indexLists = positionsDiagramFull.pop();
-  const movesList = movesText.split("\n");
+  const movesList = movesText.split('\n');
 
   const positions = fillPositionGrid(positionsDiagramFull, indexLists);
   const moves = parseMoves(movesList);
@@ -54,9 +50,7 @@ for (const move of moves) {
   }
 }
 
-const finalPart1 = [...positionGrid.keys()]
-  .sort()
-  .reduce((prev, key) => prev + last(positionGrid.get(key)), "");
+const finalPart1 = [...positionGrid.keys()].sort().reduce((prev, key) => prev + last(positionGrid.get(key)), '');
 
 console.log(`Part 1: ${finalPart1}`);
 
@@ -70,8 +64,6 @@ for (const move of moves2) {
   destination.push(...crate);
 }
 
-const finalPart2 = [...positionGrid2.keys()]
-  .sort()
-  .reduce((prev, key) => prev + last(positionGrid2.get(key)), "");
+const finalPart2 = [...positionGrid2.keys()].sort().reduce((prev, key) => prev + last(positionGrid2.get(key)), '');
 
 console.log(`Part 2: ${finalPart2}`);

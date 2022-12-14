@@ -1,11 +1,11 @@
-import fs from "fs";
-import { flatMap, isArray, zip } from "lodash";
+import fs from 'fs';
+import { flatMap, isArray, zip } from 'lodash';
 
 function parse() {
   const input = fs
-    .readFileSync("./input.txt", "utf-8")
-    .split("\n\n")
-    .map((pair) => pair.split("\n").map((packet) => JSON.parse(packet)));
+    .readFileSync('./input.txt', 'utf-8')
+    .split('\n\n')
+    .map((pair) => pair.split('\n').map((packet) => JSON.parse(packet)));
   return input as [any[], any[]][];
 }
 
@@ -15,11 +15,7 @@ function comparePackets(packets: [any[], any[]]): 1 | -1 | 0 {
     if (secondValue === undefined && firstValue !== undefined) return -1;
 
     if (firstValue !== secondValue) {
-      if (
-        !isArray(firstValue) &&
-        !isArray(secondValue) &&
-        firstValue !== secondValue
-      ) {
+      if (!isArray(firstValue) && !isArray(secondValue) && firstValue !== secondValue) {
         return firstValue < secondValue ? 1 : -1;
       } else {
         const newFirst = isArray(firstValue) ? firstValue : [firstValue];
@@ -41,12 +37,9 @@ const answer1 = packets.reduce((prev, packet, index) => {
 
 const specialPackets = [[[2]], [[6]]] as any[];
 const allPackets = [...flatMap(packets), ...specialPackets];
-const sorted = allPackets
-  .sort((a, b) => comparePackets([b, a]))
-  .map((pck) => JSON.stringify(pck));
+const sorted = allPackets.sort((a, b) => comparePackets([b, a])).map((pck) => JSON.stringify(pck));
 const answer2 =
-  (sorted.indexOf(JSON.stringify(specialPackets[0])) + 1) *
-  (sorted.indexOf(JSON.stringify(specialPackets[1])) + 1);
+  (sorted.indexOf(JSON.stringify(specialPackets[0])) + 1) * (sorted.indexOf(JSON.stringify(specialPackets[1])) + 1);
 
 console.log(`Part1: ${answer1}`);
 console.log(`Part2: ${answer2}`);

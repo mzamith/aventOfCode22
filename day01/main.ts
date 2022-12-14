@@ -1,13 +1,9 @@
-import fs from "fs";
-import { first, sum } from "lodash";
+import fs from 'fs';
+import { first, sum } from 'lodash';
 
 function parseFile() {
-  const input = fs.readFileSync("./input.txt", "utf-8");
-  return input
-    .split("\n\n")
-    .map((eachElf) =>
-      sum(eachElf.split("\n").map((calories) => parseInt(calories, 10)))
-    );
+  const input = fs.readFileSync('./input.txt', 'utf-8');
+  return input.split('\n\n').map((eachElf) => sum(eachElf.split('\n').map((calories) => parseInt(calories, 10))));
 }
 
 const calArray = parseFile();

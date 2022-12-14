@@ -1,11 +1,11 @@
-import { parseFile } from "../util";
+import { parseFile } from '../util';
 
-type Command = ["noop" | "addx", number?];
+type Command = ['noop' | 'addx', number?];
 const WIDTH = 40;
 
 function parseCommands(lines: string[]) {
   return lines.map((command) => {
-    const instruction = command.split(" ");
+    const instruction = command.split(' ');
     if (instruction.length === 2) {
       return [instruction[0], parseInt(instruction[1])];
     }
@@ -23,7 +23,7 @@ function processCycles(commands: Command[], cycles: number[]) {
       finalStrength += cycle * xValue;
     }
 
-    if (command === "addx") {
+    if (command === 'addx') {
       cycle++;
       if (cycles.includes(cycle)) {
         finalStrength += cycle * xValue;
@@ -44,7 +44,7 @@ function performDrawing(commands: Command[]) {
   for (const [command, arg] of commands) {
     draw(currentCycle, spritePosition, finalDrawing);
 
-    if (command === "addx") {
+    if (command === 'addx') {
       currentCycle++;
       draw(currentCycle, spritePosition, finalDrawing);
       spritePosition += arg;
@@ -55,24 +55,17 @@ function performDrawing(commands: Command[]) {
   return finalDrawing;
 }
 
-function draw(
-  currentCycle: number,
-  spritePosition: number,
-  finalDrawing: string[]
-) {
+function draw(currentCycle: number, spritePosition: number, finalDrawing: string[]) {
   const horizontalPosition = currentCycle % WIDTH;
   const verticalPosition = Math.floor(currentCycle / WIDTH);
   let currentLine = finalDrawing[verticalPosition];
 
-  if (!currentLine) finalDrawing.push("");
+  if (!currentLine) finalDrawing.push('');
 
-  if (
-    horizontalPosition >= spritePosition - 1 &&
-    horizontalPosition <= spritePosition + 1
-  ) {
-    finalDrawing[verticalPosition] += "#";
+  if (horizontalPosition >= spritePosition - 1 && horizontalPosition <= spritePosition + 1) {
+    finalDrawing[verticalPosition] += '#';
   } else {
-    finalDrawing[verticalPosition] += ".";
+    finalDrawing[verticalPosition] += '.';
   }
 }
 
@@ -82,5 +75,5 @@ const cycles = [20, 60, 100, 140, 180, 220];
 const totalPart1 = processCycles(commands, cycles);
 console.log(`Part 1: ${totalPart1}`);
 const totalPart2 = performDrawing(commands);
-console.log("Part 2: ");
+console.log('Part 2: ');
 console.log(totalPart2);

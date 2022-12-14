@@ -1,5 +1,5 @@
-import { last } from "lodash";
-import { parseFile } from "../util";
+import { last } from 'lodash';
+import { parseFile } from '../util';
 
 interface Position {
   x: number;
@@ -24,11 +24,8 @@ function init(numberOfTails = 9) {
 function parse() {
   const lines = parseFile();
   const positions = lines.map((line) => {
-    const [direction, numberOfPositions] = line.split(" ");
-    return [direction, parseInt(numberOfPositions, 10)] as [
-      "U" | "D" | "L" | "R",
-      number
-    ];
+    const [direction, numberOfPositions] = line.split(' ');
+    return [direction, parseInt(numberOfPositions, 10)] as ['U' | 'D' | 'L' | 'R', number];
   });
   return positions;
 }
@@ -40,10 +37,7 @@ function addPosition(position: Position) {
 }
 
 function isAdjacent(firstPosition: Position, nextPosition: Position) {
-  return (
-    Math.abs(firstPosition.x - nextPosition.x) <= 1 &&
-    Math.abs(firstPosition.y - nextPosition.y) <= 1
-  );
+  return Math.abs(firstPosition.x - nextPosition.x) <= 1 && Math.abs(firstPosition.y - nextPosition.y) <= 1;
 }
 
 function moveTail(firstPosition: Position, nextPosition: Position) {
@@ -67,25 +61,25 @@ function moveTail(firstPosition: Position, nextPosition: Position) {
   }
 }
 
-function moveHead(command: "U" | "D" | "L" | "R") {
-  if (command === "U") {
+function moveHead(command: 'U' | 'D' | 'L' | 'R') {
+  if (command === 'U') {
     headPosition.y--;
   }
 
-  if (command[0] === "D") {
+  if (command[0] === 'D') {
     headPosition.y++;
   }
 
-  if (command[0] === "L") {
+  if (command[0] === 'L') {
     headPosition.x--;
   }
 
-  if (command[0] === "R") {
+  if (command[0] === 'R') {
     headPosition.x++;
   }
 }
 
-function moveSimpleRope(command: ["U" | "D" | "L" | "R", number]) {
+function moveSimpleRope(command: ['U' | 'D' | 'L' | 'R', number]) {
   const shifts = command[1];
 
   for (let i = 0; i < shifts; i++) {
@@ -97,7 +91,7 @@ function moveSimpleRope(command: ["U" | "D" | "L" | "R", number]) {
   }
 }
 
-function moveLongRope(command: ["U" | "D" | "L" | "R", number]) {
+function moveLongRope(command: ['U' | 'D' | 'L' | 'R', number]) {
   const shifts = command[1];
 
   for (let i = 0; i < shifts; i++) {
@@ -121,6 +115,7 @@ init();
 addPosition({ x: 0, y: 0 });
 commands.forEach((command) => moveSimpleRope(command));
 console.log(`Part 1: ${tailPositions.size}`);
+
 init();
 addPosition({ x: 0, y: 0 });
 commands.forEach((command) => moveLongRope(command));
