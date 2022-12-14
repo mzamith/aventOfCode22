@@ -25,7 +25,7 @@ function comparePackets(packets: [any[], any[]]): 1 | -1 | 0 {
         const newFirst = isArray(firstValue) ? firstValue : [firstValue];
         const newSecond = isArray(secondValue) ? secondValue : [secondValue];
         const comparison = comparePackets([newFirst, newSecond]);
-        if (comparison !== undefined) {
+        if (comparison !== 0) {
           return comparison;
         }
       }
