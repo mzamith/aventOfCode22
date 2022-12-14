@@ -44,7 +44,9 @@ const allPackets = [...flatMap(packets), ...specialPackets];
 const sorted = allPackets
   .sort((a, b) => comparePackets([b, a]))
   .map((pck) => JSON.stringify(pck));
-const answer2 =( sorted.indexOf(JSON.stringify(specialPackets[0])) + 1) * ( sorted.indexOf(JSON.stringify(specialPackets[1])) + 1)
+const answer2 =
+  (sorted.indexOf(JSON.stringify(specialPackets[0])) + 1) *
+  (sorted.indexOf(JSON.stringify(specialPackets[1])) + 1);
 
 console.log(`Part1: ${answer1}`);
 console.log(`Part2: ${answer2}`);
