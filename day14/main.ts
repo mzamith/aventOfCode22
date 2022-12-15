@@ -26,7 +26,6 @@ interface Object {
 class Cave {
   occupiedPositions = new Map<string, Object>();
   topPosition: Object = this.makeRock(SAND_START_X, Number.POSITIVE_INFINITY);
-  topPositions = new Map<number, Object>();
   floorY: number;
 
   constructor(positions: [number, number][][]) {
@@ -135,6 +134,7 @@ class Cave {
           } else {
             hitAbyss = true;
             sandSettled = true;
+            break;
           }
         }
 
