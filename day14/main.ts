@@ -32,34 +32,34 @@ class Cave {
   constructor(positions: [number, number][][]) {
     for (const rockLine of positions) {
       for (let i = 1; i < rockLine.length; i++) {
-        this.drawOccupiedPositions(rockLine, i);
+        this.drawRocks(rockLine, i);
       }
     }
-    this.floorY = maxBy([...this.occupiedPositions.values()], (obj) => obj.y).y + 2;
-    console.log(this.topPosition);
   }
 
-  makeRock(x: number, y: number): Object {
+  setRockFloor(distance: number) {
+    this.floorY = maxBy([...this.occupiedPositions.values()], (obj) => obj.y).y + distance;
+  }
+
+  private makeRock(x: number, y: number): Object {
     return { x, y, id: `${x}:${y}`, type: 'rock' };
   }
 
-  makeSand(x: number, y: number): Object {
+  private makeSand(x: number, y: number): Object {
     return { x, y, id: `${x}:${y}`, type: 'sand' };
   }
 
-  getFallPositionInColumn(x: number, y: number) {
-    return minBy(
+  calcSands() {
+    return [...this.occupiedPositions.values()].filter((obj) => obj.type === 'sand').length;
+  }
+
+  private getFallPositionInColumn(x: number, y: number) {
+    const lowestObject = minBy(
       [...this.occupiedPositions.values()].filter((obj) => obj.x === x && obj.y > y),
       (obj) => obj.y
     );
-  }
 
-  getFallPositionInColumnWithFloor(x: number, y: number) {
-    const floor = this.getFallPositionInColumn(x, y);
-    if (floor === undefined) {
-      return this.makeRock(x, this.floorY);
-    }
-    return floor;
+    return lowestObject ?? this.makeRock(x, this.floorY ?? Number.POSITIVE_INFINITY);
   }
 
   draw() {
@@ -79,7 +79,7 @@ class Cave {
     }
   }
 
-  drawOccupiedPositions(rockLine: [number, number][], i: number) {
+  drawRocks(rockLine: [number, number][], i: number) {
     const originX = rockLine[i - 1][0];
     const originY = rockLine[i - 1][1];
     const destinationX = rockLine[i][0];
@@ -102,149 +102,59 @@ class Cave {
     }
   }
 
-  dropSand(iterations = Number.POSITIVE_INFINITY) {
-    console.log(this.occupiedPositions);
-    let hitAbyss = false;
-    let isBlocked = false;
-    let index = 0;
-    let sands = 0;
-    while (!hitAbyss && sands <= iterations) {
-      let fallY = this.topPosition.y - 1;
-      let fallX = this.topPosition.x;
-      let wtv = false;
-
-      console.log('');
-      console.log('Dropping Sand on');
-      console.log(fallX, fallY);
-
-      while (!wtv) {
-        const nextLeft = this.getFallPositionInColumn(fallX - 1, fallY);
-
-        console.log('Next left is ', nextLeft);
-
-        if (nextLeft === undefined) {
-          hitAbyss = true;
-          console.log(sands);
-          wtv = true;
-        } else if (nextLeft.y > fallY + 1) {
-          fallY = nextLeft.y - 1;
-          fallX = nextLeft.x;
-        } else {
-          const nextRight = this.getFallPositionInColumn(fallX + 1, fallY);
-          console.log('Next right is ', nextRight);
-
-          if (nextRight === undefined) {
-            hitAbyss = true;
-            console.log(sands);
-            wtv = true;
-          } else if (nextRight.y > fallY + 1) {
-            fallY = nextRight.y - 1;
-            fallX = nextRight.x;
-          } else if (nextRight.y === fallY + 1) {
-            wtv = true;
-            const sand = this.makeSand(fallX, fallY);
-            console.log('Adding Position', sand.x, sand.y);
-            sands++;
-            this.occupiedPositions.set(sand.id, sand);
-            if (sand.x === SAND_START_X && sand.y < this.topPosition.y) {
-              this.topPosition = sand;
-            }
-          }
-        }
-
-        if (fallX === 500 && fallY === 0) {
-          isBlocked = true;
-        }
-        // console.log('Position for Sand is: ', fallX, fallY);
-        // console.log('');
-
-        // hitAbyss = true;
-        // wtv = true;
-      }
-      index++;
+  private dropGrainOfSand(fallX: number, fallY: number) {
+    const sand = this.makeSand(fallX, fallY);
+    this.occupiedPositions.set(sand.id, sand);
+    if (sand.x === SAND_START_X && sand.y < this.topPosition.y) {
+      this.topPosition = sand;
     }
   }
 
-  dropSand2(iterations = Number.POSITIVE_INFINITY) {
-    // console.log(this.occupiedPositions);
+  dropSandUntilAbyss(exitCriteria?: (x: number, y: number) => boolean) {
     let hitAbyss = false;
-    let isBlocked = false;
-    let index = 0;
-    let sands = 0;
-    while (sands <= iterations && !isBlocked) {
+    let exited = false;
+    while (!hitAbyss && !exited) {
       let fallY = this.topPosition.y - 1;
       let fallX = this.topPosition.x;
-      let wtv = false;
+      let sandSettled = false;
 
-      //console.log('');
-      // console.log('Dropping Sand on');
-      // console.log(fallX, fallY);
+      while (!sandSettled) {
+        let next: Object;
+        let dropped = false;
+        const candidates = [fallX - 1, fallX + 1];
 
-      while (!wtv) {
-        const nextLeft = this.getFallPositionInColumnWithFloor(fallX - 1, fallY);
-
-        // console.log('Next left is ', nextLeft);
-
-        if (nextLeft === undefined) {
-          hitAbyss = true;
-          console.log(sands);
-          wtv = true;
-        } else if (nextLeft.y > fallY + 1) {
-          fallY = nextLeft.y - 1;
-          fallX = nextLeft.x;
-        } else {
-          const nextRight = this.getFallPositionInColumnWithFloor(fallX + 1, fallY);
-          // console.log('Next right is ', nextRight);
-
-          if (nextRight === undefined) {
+        for (const candidate of candidates) {
+          next = this.getFallPositionInColumn(candidate, fallY);
+          if (isFinite(next.y)) {
+            if (next.y > fallY + 1) {
+              fallY = next.y - 1;
+              fallX = next.x;
+              dropped = true;
+              break;
+            }
+          } else {
             hitAbyss = true;
-            console.log(sands);
-            wtv = true;
-          } else if (nextRight.y > fallY + 1) {
-            fallY = nextRight.y - 1;
-            fallX = nextRight.x;
-          } else if (nextRight.y === fallY + 1) {
-            wtv = true;
-            const sand = this.makeSand(fallX, fallY);
-            // console.log('Adding Position', sand.x, sand.y);
-            sands++;
-            this.occupiedPositions.set(sand.id, sand);
-            if (sand.x === SAND_START_X && sand.y < this.topPosition.y) {
-              this.topPosition = sand;
-              console.log("Top Position changed to ", sand.y)
-            }
-            if (sands % 1000 === 0) {
-                // this.draw()
-            }
-    
-            if (fallX === 500 && fallY === 0) {
-              console.log("Hey")
-              console.log(sands);
-              isBlocked = true;
-            }
+            sandSettled = true;
           }
         }
 
+        if (!dropped && !hitAbyss) {
+          this.dropGrainOfSand(fallX, fallY);
+          sandSettled = true;
 
-        // console.log('Position for Sand is: ', fallX, fallY);
-        // console.log('');
-
-        // hitAbyss = true;
-        // wtv = true;
+          exited = exitCriteria && exitCriteria(fallX, fallY);
+        }
       }
-      index++;
     }
   }
 }
 
-// Algo
-// Sand Falls
-// check Top
-// while caput
-// check available position -> check right, check left (....)
-
 const input = parse();
 const grid = new Cave(input);
-grid.draw()
-grid.dropSand2();
+grid.dropSandUntilAbyss();
 // grid.draw();
+console.log(`Part 1: ${grid.calcSands()}`);
+grid.setRockFloor(2);
+grid.dropSandUntilAbyss((x, y) => x === 500 && y === 0);
+// grid.draw();
+console.log(`Part 2: ${grid.calcSands()}`);
