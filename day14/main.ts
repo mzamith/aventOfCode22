@@ -79,7 +79,7 @@ class Cave {
     }
   }
 
-  drawRocks(rockLine: [number, number][], i: number) {
+  private drawRocks(rockLine: [number, number][], i: number) {
     const originX = rockLine[i - 1][0];
     const originY = rockLine[i - 1][1];
     const destinationX = rockLine[i][0];
